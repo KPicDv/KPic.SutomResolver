@@ -2,7 +2,6 @@
   "name": "resolver",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "serve": "vite --host",
     "build": "tsc && vite build",
