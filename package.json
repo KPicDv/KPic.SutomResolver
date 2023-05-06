@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "serve": "vite --host",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "build": "tsc && vite build",
+    "start": "pm2 start server.js --name SUTOM_WEB",
+    "stop": "pm2 stop SUTOM_WEB"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
@@ -19,6 +19,7 @@
     "vite": "^4.3.2"
   },
   "dependencies": {
-    "an-array-of-french-words": "^2.0.0"
+    "an-array-of-french-words": "^2.0.0",
+    "express": "^4.18.2"
   }
 }
