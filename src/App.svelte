@@ -1,6 +1,7 @@
 <script lang="ts">
   import FirstLetterInput from './components/FirstLetterInput.svelte'
   import LettersCountInput from "./components/LettersCountInput.svelte"
+  import PatternInput from './components/PatternInput.svelte';
   import WordsList from './components/WordsList.svelte'
   import Resolver from './lib/Resolver'
 
@@ -28,6 +29,14 @@
     resolver.addTry(e.detail.word)
     step = 3
   }
+
+  const handlePatternChange = (e: CustomEvent<{ pattern: string }>) => {
+    pattern = e.detail.pattern
+  }
+
+  const handleValidate = () => {
+    step = 4
+  }
 </script>
 
 <main>
@@ -38,7 +47,10 @@
     <FirstLetterInput on:change={handleFirstLetterInputChange} />
   {/if}
   {#if step === 2}
-    <WordsList words={words} remainingWordsCount={remainingWordsCount} on:change={handleTryWord}/>
+    <WordsList words={words} remainingWordsCount={remainingWordsCount} on:change={handleTryWord} />
+  {/if}
+  {#if step === 3}
+    <PatternInput pattern={pattern} on:change={handlePatternChange} on:validate={handleValidate} />
   {/if}
 </main>
 
