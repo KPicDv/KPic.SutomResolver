@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ContainedLettersInput from './components/ContainedLettersInput.svelte';
   import FirstLetterInput from './components/FirstLetterInput.svelte'
   import LettersCountInput from "./components/LettersCountInput.svelte"
   import PatternInput from './components/PatternInput.svelte';
@@ -10,6 +11,8 @@
   let pattern: string = null
   let remainingWordsCount: number = null
   let words: Array<string> = null
+  let tries: Array<string> = []
+  let contains: Array<string> = []
   let resolver: Resolver = null
   
   const handleLettersCountInputChange = (e: CustomEvent<{ value: number }>) => {
@@ -19,14 +22,14 @@
 
   const handleFirstLetterInputChange = (e: CustomEvent<{ letter: string}>) => {
     pattern = [e.detail.letter, ...Array(lettersCount - 1).fill('.')].join('')
-    resolver = new Resolver(pattern)
-    words = resolver.getWords()
+    resolver = new Resolver()
+    words = resolver.getWords(pattern.toLowerCase(), contains, tries)
     remainingWordsCount = resolver.getRemainingWordsCount()
     step = 2
   }
 
   const handleTryWord = (e: CustomEvent<{word: string }>) => {
-    resolver.addTry(e.detail.word)
+    tries.push(e.detail.word)
     step = 3
   }
 
@@ -34,8 +37,24 @@
     pattern = e.detail.pattern
   }
 
-  const handleValidate = () => {
+  const handleValidatePattern = () => {
     step = 4
+  }
+
+  const handleValidateContainedLetters = () => {
+    words = resolver.getWords(pattern.toLowerCase(), contains, tries)
+    remainingWordsCount = resolver.getRemainingWordsCount()
+    step = 2
+  }
+
+  const handleContainedLetterClick = (e: CustomEvent<{ letter: string }>) => {
+    const index = contains.indexOf(e.detail.letter)
+  
+    if (index === -1) {
+      contains = [...contains, e.detail.letter]
+    } else {
+      contains = contains.filter((l) => l != e.detail.letter)
+    }
   }
 </script>
 
@@ -50,7 +69,10 @@
     <WordsList words={words} remainingWordsCount={remainingWordsCount} on:change={handleTryWord} />
   {/if}
   {#if step === 3}
-    <PatternInput pattern={pattern} on:change={handlePatternChange} on:validate={handleValidate} />
+    <PatternInput pattern={pattern} on:change={handlePatternChange} on:validate={handleValidatePattern} />
+  {/if}
+  {#if step === 4}
+    <ContainedLettersInput contains={contains} on:click={handleContainedLetterClick} on:validate={handleValidateContainedLetters}/>
   {/if}
 </main>
 

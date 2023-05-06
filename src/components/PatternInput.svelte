@@ -25,7 +25,7 @@
   <div class="letters">
     {#each pattern as letter, index (index)}
       {#if letter === '.'}
-        <button on:click={() => selectedIndex = index}>{letter}</button>
+        <button class:yellow={selectedIndex === index} on:click={() => selectedIndex = index}>{letter}</button>
       {:else}
         <button disabled>{letter}</button>
       {/if}
@@ -43,12 +43,11 @@
   .letters {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
     margin-bottom: 12px;
   }
 
   .action {
-    width: auto;
-    margin: auto;
+    margin-top: 12px;
   }
  </style>

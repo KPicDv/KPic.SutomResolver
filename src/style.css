@@ -20,19 +20,27 @@ h3 {
   font-weight: 500;
 }
 
-button, .button {
+button {
   display: flex;
   justify-content: center;
   align-items: center;
   background: #045e9b;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 8px;
   border: 2px solid #303436;
+  cursor: pointer;
 }
 
-button {
-  cursor: pointer;
+button.small {
+  width: 28px;
+  height: 28px;
+}
+
+button.large {
+  width: 50px;
+  height: 50px;
+  font-size: 32px;
 }
 
 button[disabled] {
@@ -41,8 +49,16 @@ button[disabled] {
   color: #FFF;
 }
 
-button.large {
-  width: 50px;
-  height: 50px;
-  font-size: 32px;
+button.action {
+  width: auto;
+  margin: auto;
+  background: #049b2a;
+}
+
+.yellow {
+  background: #ffbd00;
+}
+
+.red {
+  background: #e7002a;
 }

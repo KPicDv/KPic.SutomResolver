@@ -1,41 +1,25 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import KeyboardRow from './KeyboardRow.svelte';
 
-  const firstRowLetters = 'AZERTYUIOP'
-  const secondRowLetters = 'QSDFGHJKLM'
-  const thirdRowLetters = 'WXCVBN'
+  export let yellow: Array<string> = []
+  export let red: Array<string> = []
+
+  const firstRowLetters = 'AZERTYUIOP'.split('')
+  const secondRowLetters = 'QSDFGHJKLM'.split('')
+  const thirdRowLetters = 'WXCVBN'.split('')
+
+  console.log(yellow);
 
   const dispatch = createEventDispatcher();
 
-  const handleClick = (letter: string) => {
-    dispatch('click', { letter });
+  const handleClick = (e: CustomEvent<{ letter: string }>) => {
+    dispatch('click', { letter: e.detail.letter });
   }
 </script>
 
 <div>
-  <div class="row">
-    {#each firstRowLetters as letter}
-      <button on:click={() => handleClick(letter)}>{letter}</button>
-    {/each}
-  </div>
-  <div class="row">
-    {#each secondRowLetters as letter}
-      <button on:click={() => handleClick(letter)}>{letter}</button>
-    {/each}
-  </div>
-  <div class="row">
-    {#each thirdRowLetters as letter}
-      <button on:click={() => handleClick(letter)}>{letter}</button>
-    {/each}
-  </div>
+  <KeyboardRow letters={firstRowLetters} yellow={yellow} red={red} on:click={handleClick} />
+  <KeyboardRow letters={secondRowLetters} yellow={yellow} red={red} on:click={handleClick} />
+  <KeyboardRow letters={thirdRowLetters} yellow={yellow} red={red} on:click={handleClick} />
 </div>
-
-<style>
- .row {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  gap: 4px;
-  margin-bottom: 4px;
- }
-</style>

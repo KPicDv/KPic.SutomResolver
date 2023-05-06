@@ -26,27 +26,25 @@ const withoutAccent = (value: string) => {
 }
 
 export default class Resolver {
-  private _pattern: string
-  private _contains: Array<string>
-  private _tries: Array<string>
   private _words: Array<string>
 
-  constructor(pattern: string) {
-    this._pattern = pattern.toLowerCase()
-    this._contains = []
-    this._tries = []
+  constructor() {
     this._words = (allWords as Array<string>).filter((w) => !w.includes('-'))
   }
 
-  public getWords() {
-
-    const regexsErrors = this._contains.map((letter) => this._tries.map((a) => new RegExp(`^${a.split('').map((l) => l === letter ? l :'.').join('')}`))).flat()
-    const replacement = '.'
-    const regexExcludes = new RegExp(`^${this._pattern.replace(/_/g, replacement)}$`)
-    const regexIncludes = new RegExp(this._pattern.replace(/[a-z]/g, '.').replace(/_/g, '(.)'))
-
-    console.log(this._words.length)
+  public getWords(pattern: string, containedLetters: Array<string>, tries: Array<string>) {
+    const contains = containedLetters.map((l) => l.toLowerCase())
+    const found = [...new Set(pattern.replace(/\./g, '').split(''))]
+    const notContains = [...new Set(tries.join('').split('').filter((l) => !found.includes(l) && !contains.includes(l)))].join('')
+    const regexsErrors = contains.map((letter) => tries.map((a) => new RegExp(`^${a.split('').map((l) => l === letter ? l :'.').join('')}`))).flat()
+    const replacement = notContains ? `[^${notContains.replace(/[^a-z]/g, '')}]` : '.';
+    const regexExcludes = new RegExp(`^${pattern.replace(/\./g, replacement)}$`)
+    const regexIncludes = new RegExp(pattern.replace(/[a-z]/g, '.').replace(/\./g, '(.)'))
     
+    console.log('found', found);
+    console.log('notContains', notContains);
+    console.log('replacement', replacement);
+
     this._words = this._words
       .map((w) => withoutAccent(w.toLowerCase()))
       .filter((w) => {
@@ -54,7 +52,7 @@ export default class Resolver {
 
         if (regexsErrors.some((e) => e.test(w))) return false
 
-        if (this._tries.includes(w)) return false
+        if (tries.includes(w)) return false
 
         const matches = w.match(regexIncludes)
         matches.shift()
@@ -63,12 +61,11 @@ export default class Resolver {
         delete matches.input
         delete matches.groups
 
-        return this._contains.every((letter) => matches.includes(letter))
+        return contains.every((letter) => matches.includes(letter))
       })
-    console.log(this._words.length)
 
     const enrichedWords = this._words.map((word) => {
-      const letters = word.split('').filter((l) => !this._contains.includes(l))
+      const letters = word.split('').filter((l) => !contains.includes(l))
       const wordsVowels = [...new Set(letters.filter((l) => vowels.includes(l)))].length
       const wordsConsonants = [...new Set(letters.filter((l) => !vowels.includes(l)))].length
 
@@ -81,10 +78,6 @@ export default class Resolver {
     enrichedWords.sort((a, b) => b.score - a.score)
 
     return [...new Set(enrichedWords)].slice(0, 5).map(({ word }) => word)
-  }
-
-  public addTry(word: string) {
-    this._tries.push(word)
   }
 
   public getRemainingWordsCount() {
