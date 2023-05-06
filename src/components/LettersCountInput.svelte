@@ -4,12 +4,12 @@
   const dispatch = createEventDispatcher();
 
   const handleClick = (value: number) => {
-    dispatch('change', value);
+    dispatch('change', { value });
   }
 </script>
 
 <div>
-  <h2>Nombre de lettres</h2>
+  <h3>Nombre de lettres</h3>
   <div class="buttons">
     <button class="large" on:click={() => handleClick(5)}>5</button>
     <button class="large" on:click={() => handleClick(6)}>6</button>

@@ -1,5 +1,5 @@
 body {
-  background-color: #242424;
+  background-color: #202324;
   width: 100vw;
   height: 100vh;
   margin: 0;
@@ -13,27 +13,28 @@ body {
   height: 100%;
 }
 
-h2 {
+h3 {
   margin: 0;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   text-transform: uppercase;
   font-weight: 500;
 }
 
 button {
-  background: #2375ac;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #045e9b;
+  width: 28px;
+  height: 28px;
+  padding: 8px;
+  border: 2px solid #303436;
   cursor: pointer;
   transition-duration: 0.2s;
 }
 
-button:hover {
-  background: #2d95da;
-}
-
 button.large {
-  font-size: 16px;
-  padding: 16px 24px;
+  width: 50px;
+  height: 50px;
+  font-size: 32px;
 }
