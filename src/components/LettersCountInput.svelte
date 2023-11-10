@@ -16,6 +16,9 @@
     <button class="large" on:click={() => handleClick(7)}>7</button>
     <button class="large" on:click={() => handleClick(8)}>8</button>
     <button class="large" on:click={() => handleClick(9)}>9</button>
+    <button class="large" on:click={() => handleClick(10)}>10</button>
+    <button class="large" on:click={() => handleClick(11)}>11</button>
+    <button class="large" on:click={() => handleClick(12)}>12</button>
   </div>
 </div>
 

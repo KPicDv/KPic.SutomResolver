@@ -1,40 +1,43 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import Keyboard from './Keyboard.svelte';
+  import type { Position } from '../models/Position';
 
-  export let pattern: string
-  let selectedIndex: number = null
+  export let word: string
+  export let positions: Array<Position>
   
   const dispatch = createEventDispatcher();
 
-  const handleLetterClick = (e: CustomEvent<{ letter: string }>) => {
-    const paternParts = pattern.split('')
-    paternParts[selectedIndex] = e.detail.letter
-    
-    dispatch('change', { pattern: paternParts.join('') });
-    selectedIndex = null
+  const handleValidate = () => {
+    let invalidLetters = word.split('').filter((letter, index) => !positions.some((p) => p.index === index && p.letter === letter))
+    dispatch('validate', { positions, invalidLetters })
   }
 
-  const handleValidate = () => {
-    dispatch('validate')
+  const handleChange = (index: number) => {
+    const position = positions.find((p) => p.index === index)
+    if (position) {
+      if (position.isValid) {
+        positions = positions.filter((p) => p !== position)
+      } else {
+        position.isValid = true
+        positions = [...positions]
+      }
+    } else {
+      positions = [...positions, { index, letter: word[index], isValid: false }]
+    }
   }
 </script>
 
 <div>
   <h3>Sélection des lettres valides</h3>
   <div class="letters">
-    {#each pattern as letter, index (index)}
-      {#if letter === '.'}
-        <button class:yellow={selectedIndex === index} on:click={() => selectedIndex = index}>{letter}</button>
-      {:else}
-        <button disabled>{letter}</button>
-      {/if}
+    {#each word as letter, index (index)}
+      <button
+        class:yellow={positions.some((p) => p.index === index && !p.isValid)}
+        class:red={positions.some((p) => p.index === index && p.isValid)}
+        on:click={() => handleChange(index)}
+      >{letter}</button>
     {/each}
   </div>
-
-  {#if selectedIndex}
-    <Keyboard on:click={handleLetterClick} />
-  {/if}
 
   <button class="action" on:click={handleValidate}>VALIDER</button>
 </div>
@@ -49,5 +52,6 @@
 
   .action {
     margin-top: 12px;
+    padding: 4px 24px;
   }
  </style>

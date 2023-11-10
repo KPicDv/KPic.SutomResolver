@@ -5,9 +5,9 @@
   export let yellow: Array<string> = []
   export let red: Array<string> = []
 
-  const firstRowLetters = 'AZERTYUIOP'.split('')
-  const secondRowLetters = 'QSDFGHJKLM'.split('')
-  const thirdRowLetters = 'WXCVBN'.split('')
+  const firstRowLetters = 'azertyuiop'.split('')
+  const secondRowLetters = 'qsdfghjklm'.split('')
+  const thirdRowLetters = 'wxcvbn'.split('')
 
   console.log(yellow);
 

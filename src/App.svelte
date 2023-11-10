@@ -1,60 +1,49 @@
 <script lang="ts">
-  import ContainedLettersInput from './components/ContainedLettersInput.svelte';
   import FirstLetterInput from './components/FirstLetterInput.svelte'
   import LettersCountInput from "./components/LettersCountInput.svelte"
-  import PatternInput from './components/PatternInput.svelte';
+  import PatternInput from './components/PatternInput.svelte'
   import WordsList from './components/WordsList.svelte'
-  import Resolver from './lib/Resolver'
+  import axios from 'axios';
+  import type { Position } from './models/Position';
 
   let step = 0
-  let lettersCount: number = null
-  let pattern: string = null
+  let size: number = null
   let remainingWordsCount: number = null
+  let positions: Array<Position> = []
   let words: Array<string> = null
-  let tries: Array<string> = []
-  let contains: Array<string> = []
-  let resolver: Resolver = null
+  let currentWord = ''
+  let invalidLetters: Array<string> = []
+
+  const getWords = async () => {
+    const response = await axios.post('https://api.game-resolver.kpic.dev/sutom/resolve', {
+      size: size,
+      positions,
+      invalidLetters,
+    })
+    words = response.data.words
+    remainingWordsCount = response.data.total
+    step = 2
+  }
   
   const handleLettersCountInputChange = (e: CustomEvent<{ value: number }>) => {
-    lettersCount = e.detail.value
+    size = e.detail.value
     step = 1
   }
 
   const handleFirstLetterInputChange = (e: CustomEvent<{ letter: string}>) => {
-    pattern = [e.detail.letter, ...Array(lettersCount - 1).fill('.')].join('')
-    resolver = new Resolver()
-    words = resolver.getWords(pattern.toLowerCase(), contains, tries)
-    remainingWordsCount = resolver.getRemainingWordsCount()
-    step = 2
+    positions = [...positions, { index: 0, letter: e.detail.letter, isValid: true }]
+    getWords()
   }
 
   const handleTryWord = (e: CustomEvent<{word: string }>) => {
-    tries.push(e.detail.word)
+    currentWord = e.detail.word
     step = 3
   }
 
-  const handlePatternChange = (e: CustomEvent<{ pattern: string }>) => {
-    pattern = e.detail.pattern
-  }
-
-  const handleValidatePattern = () => {
-    step = 4
-  }
-
-  const handleValidateContainedLetters = () => {
-    words = resolver.getWords(pattern.toLowerCase(), contains, tries)
-    remainingWordsCount = resolver.getRemainingWordsCount()
-    step = 2
-  }
-
-  const handleContainedLetterClick = (e: CustomEvent<{ letter: string }>) => {
-    const index = contains.indexOf(e.detail.letter)
-  
-    if (index === -1) {
-      contains = [...contains, e.detail.letter]
-    } else {
-      contains = contains.filter((l) => l != e.detail.letter)
-    }
+  const handleValidatePattern = (e: CustomEvent<{ positions: Array<Position>, invalidLetters: Array<string> }>) => {
+    positions = e.detail.positions
+    invalidLetters = [...invalidLetters, ...e.detail.invalidLetters]
+    getWords()
   }
 </script>
 
@@ -69,10 +58,7 @@
     <WordsList words={words} remainingWordsCount={remainingWordsCount} on:change={handleTryWord} />
   {/if}
   {#if step === 3}
-    <PatternInput pattern={pattern} on:change={handlePatternChange} on:validate={handleValidatePattern} />
-  {/if}
-  {#if step === 4}
-    <ContainedLettersInput contains={contains} on:click={handleContainedLetterClick} on:validate={handleValidateContainedLetters}/>
+    <PatternInput word={currentWord} positions={positions} on:validate={handleValidatePattern} />
   {/if}
 </main>
 
