@@ -32,7 +32,7 @@
   <div class="letters">
     {#each word as letter, index (index)}
       <button
-        class:yellow={positions.some((p) => p.index === index && !p.isValid)}
+        class:yellow={positions.some((p) => p.index === index && !p.isValid && p.letter === letter)}
         class:red={positions.some((p) => p.index === index && p.isValid)}
         on:click={() => handleChange(index)}
       >{letter}</button>

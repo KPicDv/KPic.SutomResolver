@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FirstLetterInput from './components/FirstLetterInput.svelte'
-  import LettersCountInput from "./components/LettersCountInput.svelte"
-  import PatternInput from './components/PatternInput.svelte'
-  import WordsList from './components/WordsList.svelte'
   import axios from 'axios';
+  import FirstLetterInput from './components/FirstLetterInput.svelte';
+  import LettersCountInput from "./components/LettersCountInput.svelte";
+  import WordInput from './components/WordInput.svelte';
+  import WordsList from './components/WordsList.svelte';
   import type { Position } from './models/Position';
 
   let step = 0
@@ -58,7 +58,7 @@
     <WordsList words={words} remainingWordsCount={remainingWordsCount} on:change={handleTryWord} />
   {/if}
   {#if step === 3}
-    <PatternInput word={currentWord} positions={positions} on:validate={handleValidatePattern} />
+    <WordInput word={currentWord} positions={positions} on:validate={handleValidatePattern} />
   {/if}
 </main>
 
